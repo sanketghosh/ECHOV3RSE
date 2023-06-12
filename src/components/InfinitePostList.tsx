@@ -13,8 +13,8 @@ export type Post = {
 type InfinitePostListProps = {
   isLoading: boolean;
   isError: boolean;
-  hasMore: boolean;
-  fetchNewPost: () => Promise<unknown>;
+  hasMore: boolean | undefined;
+  fetchNewPosts: () => Promise<unknown>;
   posts?: Post[];
 };
 
@@ -22,8 +22,8 @@ export default function InfinitePostList({
   posts,
   isLoading,
   isError,
-  hasMore,
-  fetchNewPost,
+  hasMore = false,
+  fetchNewPosts,
 }: InfinitePostListProps) {
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Error</h1>;
@@ -35,7 +35,7 @@ export default function InfinitePostList({
     <ul className="">
       <InfiniteScroll
         dataLength={posts.length}
-        next={fetchNewPost}
+        next={fetchNewPosts}
         hasMore={hasMore}
         loader={"Loading"}
         className="overflow-hidden"
