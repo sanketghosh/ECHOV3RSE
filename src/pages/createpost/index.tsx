@@ -1,16 +1,30 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { api } from "~/utils/api";
 
 export default function CreatePost() {
   const [inputValue, setInputValue] = useState("");
 
   const session = useSession();
 
-  if (session.status !== "authenticated") return;
+  if (session.status !== "authenticated") return null;
+
+  const createPost = api.post.create.useMutation({
+    onSuccess: (newPost) => {
+      // console.log(newPost);
+      setInputValue("");
+    },
+  });
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    createPost.mutate({ content: inputValue });
+  }
 
   return (
-    <form className="flex flex-col gap-3 p-3">
+    <form className="flex flex-col gap-3 p-3" onSubmit={handleSubmit}>
       <div className="flex items-center justify-between">
         <Image
           src={session.data.user.image || ""}
